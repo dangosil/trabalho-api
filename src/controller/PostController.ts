@@ -7,14 +7,18 @@ export class PostController {
     private postBusiness = new PostBusiness();
 
     public getAllPosts = (req: Request, res: Response) => {
+        console.log("Rota: GET /posts - Buscando todos os posts...");
+
         try {
             const allPosts = this.postBusiness.getAllPosts();
+            console.log("Posts encontrados:", allPosts);
             
             const response: ApiResponse<Post[]> = {
                 success: true,
                 message: "Posts obtidos com sucesso.",
                 data: allPosts
             };
+            console.log("Resposta enviada:", response);
             res.status(200).json(response);
         
         } catch (error: any) {
@@ -28,15 +32,20 @@ export class PostController {
     }
 
     public criarPost = (req: Request, res: Response) => {
+        console.log("Rota: POST /posts - Criando novo post...");
+        console.log("Dados recebidos:", req.body);
+
         try {
             const input = req.body;
             const novoPost = this.postBusiness.criarPost(input);
+            console.log("Post criado:", novoPost);
 
             const response: ApiResponse<Post> = {
                 success: true,
                 message: "Post criado com sucesso.",
                 data: novoPost
             };
+            console.log("Resposta enviada:", response);
             res.status(201).json(response);
 
         } catch (error: any) {
