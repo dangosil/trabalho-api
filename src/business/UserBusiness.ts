@@ -2,7 +2,7 @@ import { users} from "../bd";
 import { User } from "../data/types";
 
 export class UserBusiness {
-    getAllUsers() {
+    public getAllUsers() {
         return users;
     }
     

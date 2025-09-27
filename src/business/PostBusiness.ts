@@ -3,6 +3,10 @@ import { Post } from "../data/types";
 import { users } from "../bd";
 
 export class PostBusiness {
+    public getAllPosts() {
+        return posts;
+    }
+
     public criarPost(input: any) {
         const{id, title, content, authorId} = input;
         const minimoCaracteresTitulo = 3;
