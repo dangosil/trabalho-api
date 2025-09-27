@@ -158,4 +158,37 @@ export class UserController {
             res.status(statusCode).json(response);
         }
     }
+
+    public atualizarUsuario = (req: Request, res: Response) => {
+        console.log("Atualizando usuário...");
+        try {
+            const idAtualizado = Number(req.params.id);
+            const input = req.body;
+
+            const usuarioQueSeraAtualizado = this.userBusiness.atualizarUsuario(idAtualizado, input);
+
+            const response: ApiResponse<User> = {
+                success: true,
+                message: "Usuário atualizado com sucesso.",
+                data: usuarioQueSeraAtualizado
+            };
+            res.status(200).json(response);
+        } catch (error: any) {
+            let statusCode = 500;
+            if(error.message.includes("não encontrado")) {
+                statusCode = 404;
+            } else if(error.message.includes("cadastrado")) {
+                statusCode = 409;
+            } else if(error.message.includes("incompletos")) {
+                statusCode = 400;
+            }
+
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message,
+                data: null
+            }
+            res.status(statusCode).json(response);
+        }
+    }
 }

@@ -1,3 +1,5 @@
+// Usei essa pasta para fazer os testes iniciais sem a arquitetura em camadas
+
 // import express, {Request, Response } from 'express';
 // import cors from 'cors';
 

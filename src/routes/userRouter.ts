@@ -11,5 +11,5 @@ userRouter.get("/", userController.getAllUsers);
 userRouter.get("/:id", userController.buscarUsuarioPorId);
 
 userRouter.post("/", userController.criarUsuario);
-// userRouter.put("/:id", userController.atualizarUsuario);
+userRouter.put("/:id", userController.atualizarUsuario);
 // userRouter.delete("/:id", userController.deletarUsuario);

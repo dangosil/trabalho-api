@@ -49,4 +49,30 @@ export class UserBusiness {
     users.push(novoUsuario);
     return novoUsuario;
     }
+
+    public atualizarUsuario = (id: number, input: any) => {
+        const { name, email, role, age } = input;
+
+        if (name === undefined || email === undefined || role === undefined || age === undefined) {
+            throw new Error("Dados incompletos. Por favor, forneça todos os campos necessários.");
+        }
+        const usuarioQueSeraAtualizado = users.find((u) => u.id === id);
+
+        if(!usuarioQueSeraAtualizado) {
+            throw new Error("Usuário não encontrado.");
+        }
+
+        const emailExiste = users.find((u) => u.email === email && u.id !== id);
+
+        if(emailExiste) {
+            throw new Error("Email já cadastrado. Insira um email válido.");
+        }
+
+        usuarioQueSeraAtualizado.name = name;
+        usuarioQueSeraAtualizado.email = email;
+        usuarioQueSeraAtualizado.role = role;
+        usuarioQueSeraAtualizado.age = age;
+
+        return usuarioQueSeraAtualizado;
+    }
 }
