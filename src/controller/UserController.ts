@@ -2,6 +2,7 @@ import {Request, Response } from 'express';
 import { UserBusiness } from '../business/UserBusiness';
 import { ApiResponse } from '../data/types';
 import { User } from '../data/types';
+import { users } from '../bd';
 
 
 export class UserController {
@@ -9,11 +10,22 @@ export class UserController {
 
     public getAllUsers = (req: Request, res: Response) => {
         try {
-            const result = this.userBusiness.getAllUsers();
-            res.status(200).json(result);
+            const users = this.userBusiness.getAllUsers();
+
+            const response: ApiResponse<User[]> = {
+                success: true,
+                message: "Usuários obtidos com sucesso.",
+                data: users
+            };
+            res.status(200).json(response);
+        
         } catch (error: any) {
-            console.error(error);
-            res.status(500).json({message: "Erro interno do servidor."});
+            const response : ApiResponse<null> = {
+                success: false,
+                message: error.message || "Erro interno do servidor.",
+                data: null
+            };
+            res.status(500).json(response);
         }
     }
 
@@ -21,10 +33,20 @@ export class UserController {
         try {
             const { name } = req.body;
             const result = this.userBusiness.buscarUsuarioPeloNome(name);
+            
+            const response: ApiResponse<User[]> = {
+                success: true,
+                message: "Busca por nome realizada com sucesso.",
+                data: result
+            };
             res.status(200).json(result);
         } catch (error: any) {
-            console.error(error);
-            res.status(500).json({message: "Erro interno do servidor."});
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message || "Erro interno do servidor.",
+                data: null
+            };
+            res.status(500).json(response);
         }
     }
 
@@ -32,9 +54,29 @@ export class UserController {
         try {
             const { min, max} = req.body;
             const result = this.userBusiness.buscarUsuarioPorIdade(min, max);
+
+            const response: ApiResponse<User[]> = {
+                success: true,
+                message: "Busca por idade realizada com sucesso.",
+                data: result
+            };
             res.status(200).json(result);
         } catch (error: any) {
-            throw new Error(error);
+            if (error.message.includes("inválidos")) {
+                const response: ApiResponse<null> = {
+                    success: false,
+                    message: error.message,
+                    data: null
+                };
+                res.status(400).json(response);
+            } else {
+                const response: ApiResponse<null> = {
+                    success: false,
+                    message: error.message || "Erro interno do servidor.",
+                    data: null
+                };
+                res.status(500).json(response);
+            }
         }
     }
 
