@@ -2,9 +2,6 @@ import {Request, Response } from 'express';
 import { UserBusiness } from '../business/UserBusiness';
 import { ApiResponse } from '../data/types';
 import { User } from '../data/types';
-import { users } from '../bd';
-
-
 export class UserController {
     private userBusiness = new UserBusiness();
 

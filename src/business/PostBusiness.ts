@@ -3,8 +3,8 @@ import { Post } from "../data/types";
 import { users } from "../bd";
 
 export class PostBusiness {
-    public criarPort(input: any) {
-        const{id, title, content, authorId, createdAt, published} = input;
+    public criarPost(input: any) {
+        const{id, title, content, authorId} = input;
         const minimoCaracteresTitulo = 3;
         const minimoCaracteresContrudo = 10;
         const autorExiste = users.find((u) => u.id ===authorId);
@@ -17,7 +17,14 @@ export class PostBusiness {
             throw new Error('O ID do autor forneciso não existe.');
         }
 
-        const novoPost: Post = {id, title, content, authorId, createdAt: new Date(), published: false};
+        const novoPost: Post = {
+            id: posts.length > 0 && posts[posts.length - 1] ? posts[posts.length - 1]!.id + 1 : 1, 
+            title, 
+            content, 
+            authorId, 
+            createdAt: new Date(), 
+            published: false
+        };
         posts.push(novoPost);
         return novoPost;
     }
