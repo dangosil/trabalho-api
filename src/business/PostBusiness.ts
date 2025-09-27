@@ -18,7 +18,7 @@ export class PostBusiness {
         } else if (content.length < minimoCaracteresContrudo) {
             throw new Error('O conteúdo deve ter no mínimo 10 caracteres.');
         } else if(!autorExiste) {
-            throw new Error('O ID do autor forneciso não existe.');
+            throw new Error('O ID do autor fornecido não existe.');
         }
 
         const novoPost: Post = {

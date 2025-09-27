@@ -17,9 +17,6 @@ export class UserBusiness {
     public buscarUsuarioPorIdade(min: Number, max: Number) {
         const minAge = Number(min);
         const maxAge = Number(max);
-        if(isNaN(minAge) || isNaN(maxAge)) {
-            throw new Error('Parâmetros inválidos.');
-        }
         return users.filter((u) => u.age >= minAge && u.age <= maxAge);
     }
 

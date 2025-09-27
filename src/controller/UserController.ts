@@ -28,8 +28,8 @@ export class UserController {
 
     public buscarUsuarioPeloNome = (req: Request, res: Response) => {
         try {
-            const { name } = req.body;
-            const result = this.userBusiness.buscarUsuarioPeloNome(name);
+            const { name } = req.query;
+            const result = this.userBusiness.buscarUsuarioPeloNome(name as string);
             
             const response: ApiResponse<User[]> = {
                 success: true,
@@ -48,9 +48,23 @@ export class UserController {
     }
 
     public buscarUsuarioPorIdade = (req: Request, res: Response) => {
+        console.log(req.query);
         try {
-            const { min, max} = req.body;
-            const result = this.userBusiness.buscarUsuarioPorIdade(min, max);
+            const { min, max } = req.query;
+
+            const minAge = Number(min);
+            const maxAge = Number(max);
+
+            if(isNaN(minAge) || isNaN(maxAge)) {
+                const response: ApiResponse<null> = {
+                    success: false,
+                    message: "Parâmetros 'min' e 'max' devem ser números.",
+                    data: null
+                }
+                return res.status(400).json(response);
+            }
+
+            const result = this.userBusiness.buscarUsuarioPorIdade(minAge, maxAge);
 
             const response: ApiResponse<User[]> = {
                 success: true,
@@ -78,11 +92,13 @@ export class UserController {
     }
 
     public buscarUsuarioPorId = (req: Request, res: Response) => {
+        console.log(req.params.id);
         try {
             const userId = Number(req.params.id);
             const user = this.userBusiness.buscarUsuarioPorId(userId);
 
             if(user) {
+                console.log(user);
                 const response: ApiResponse<User> = {
                     success: true,
                     message: "Usuário encontrado com sucesso.",
@@ -104,6 +120,30 @@ export class UserController {
                 data: null
             };
             res.status(500).json(response);
+        }
+    }
+
+    public criarUsuario = (req: Request, res: Response) => {
+        console.log(req.body);
+        try {
+            const input = req.body;
+            const novoUsuario = this.userBusiness.criarUsuario(input);
+
+            console.log(novoUsuario);
+
+            const response: ApiResponse<User> = {
+                success: true,
+                message: "Usuário criado com sucesso.",
+                data: novoUsuario
+            };
+            res.status(201).json(response);
+        } catch (error: any) {
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message,
+                data: null
+            };
+            res.status(400).json(response);
         }
     }
 }
