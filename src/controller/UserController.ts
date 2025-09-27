@@ -124,7 +124,9 @@ export class UserController {
     }
 
     public criarUsuario = (req: Request, res: Response) => {
+
         console.log(req.body);
+
         try {
             const input = req.body;
             const novoUsuario = this.userBusiness.criarUsuario(input);
@@ -137,13 +139,23 @@ export class UserController {
                 data: novoUsuario
             };
             res.status(201).json(response);
+
         } catch (error: any) {
+
+            let statusCode = 500;
+
+            if(error.message.includes("cadastrado")) {
+                statusCode = 409;
+            } else if(error.message.includes("incompletos")) {
+                statusCode = 400;
+            }
+
             const response: ApiResponse<null> = {
                 success: false,
                 message: error.message,
                 data: null
             };
-            res.status(400).json(response);
+            res.status(statusCode).json(response);
         }
     }
 }

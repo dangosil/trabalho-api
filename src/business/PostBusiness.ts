@@ -8,17 +8,39 @@ export class PostBusiness {
     }
 
     public criarPost(input: any) {
-        const{id, title, content, authorId} = input;
+        const{ title, content, authorId } = input;
+        const errors: string[] = [];
+
+        if(title === undefined) {
+            errors.push('O campo "tittle" é obrigatório.');
+        }
+
+        if(content === undefined) {
+            errors.push('O campo "content" é obrigatório.');
+        }
+
+        if(authorId === undefined) {
+            errors.push('O campo "authorId" é obrigatório.');
+        }
+        
         const minimoCaracteresTitulo = 3;
         const minimoCaracteresContrudo = 10;
-        const autorExiste = users.find((u) => u.id ===authorId);
+        const autorExiste = users.find((u) => u.id === authorId);
         
         if(title.length < minimoCaracteresTitulo) {
-            throw new Error('O título deve ter no mínimo 3 caracteres.');
-        } else if (content.length < minimoCaracteresContrudo) {
-            throw new Error('O conteúdo deve ter no mínimo 10 caracteres.');
-        } else if(!autorExiste) {
-            throw new Error('O ID do autor fornecido não existe.');
+            errors.push('O título deve ter no mínimo 3 caracteres.');
+        } 
+
+        if (content.length < minimoCaracteresContrudo) {
+            errors.push('O conteúdo deve ter no mínimo 10 caracteres.');
+        } 
+        
+        if(!autorExiste) {
+            errors.push('O ID do autor fornecido não existe.');
+        }
+
+        if(errors.length > 0) {
+            throw new Error(errors.join(", "));
         }
 
         const novoPost: Post = {

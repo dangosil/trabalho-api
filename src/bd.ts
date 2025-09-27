@@ -38,12 +38,9 @@ export const users: User[] = [
 
 export let posts: Post[] = [];
 
-    // exemplos de post
+    // exemplo de post para copiar e colar
     // {
-    //     id: 1,
-    //     title: "Primeiro Post da Alice",
-    //     content: "Este é o conteúdo do primeiro post criado pela administradora.",
-    //     authorId: 1,
-    //     createdAt: new Date,
-    //     published: true
-    // },
+    //     "title": "Primeiro Post da Alice",
+    //     "content": "Este é o conteúdo do primeiro post criado pela administradora.",
+    //     "authorId": 1,
+    // }

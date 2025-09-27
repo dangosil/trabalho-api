@@ -38,13 +38,25 @@ export class PostController {
                 data: novoPost
             };
             res.status(201).json(response);
+
         } catch (error: any) {
+
+            console.error(error.message);
+
+            let statusCode = 500;
+
+            if(error.message.incluedes("autor")) {
+                statusCode = 404;
+            } else if(error.message.includes("obrigatório") || error.message.includes("caracteres")) {
+                statusCode = 400;
+            }
+
             const response: ApiResponse<null> = {
                 success: false,
                 message: error.message || "Erro interno do servidor.",
                 data: null
             };
-            res.status(500).json(response);
+            res.status(statusCode).json(response);
         }
     }
 }

@@ -31,6 +31,17 @@ export class UserBusiness {
 
     public criarUsuario(input: any) {
         const {id, name, email, role, age} = input;
+        const idExiste = users.find((u) => u.id === id);
+        const emailExiste = users.find((u) => u.email === email);
+
+        if(idExiste) {
+            throw new Error('ID já cadastrado. Insira um ID válido.');
+        }
+
+        if(emailExiste) {
+            throw new Error('Email já cadastrado. Insira um email válido.');
+        }
+
         if(!id || !name || !email || !role || !age) {
             throw new Error('Dados incompletos. Por favor, forneça todos os campos necessários.');
     }
