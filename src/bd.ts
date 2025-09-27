@@ -1,5 +1,4 @@
-import { Post } from "./types/Post";
-import { User } from "./types/User";
+import { Post, User } from "./data/types";
 
 export const users: User[] = [
     {
@@ -37,31 +36,14 @@ export const users: User[] = [
 
 
 
-export const posts: Post[] = [
-    {
-        id: 1,
-        title: "Primeiro Post da Alice",
-        content: "Este é o conteúdo do primeiro post criado pela administradora.",
-        authorId: 1,
-        createdAt: new Date("2025-09-18T21:00:00Z"),
-        published: true
-    },
+export let posts: Post[] = [];
 
-    {
-        id: 2,
-        title: "Dicas de TypeScript",
-        content: "Conteúdo sobre como usar TypeScript de forma eficiente...",
-        authorId: 2,
-        createdAt: new Date("2025-09-18T21:30:00Z"),
-        published: false
-    },
-
-    {
-        id: 3,
-        title: "Introdução ao Express.js",
-        content: "Um guia para iniciantes no framework Express para Node.js.",
-        authorId: 1,
-        createdAt: new Date("2025-09-18T22:00:00Z"),
-        published: true
-    }
-]
+    // exemplos de post
+    // {
+    //     id: 1,
+    //     title: "Primeiro Post da Alice",
+    //     content: "Este é o conteúdo do primeiro post criado pela administradora.",
+    //     authorId: 1,
+    //     createdAt: new Date,
+    //     published: true
+    // },
