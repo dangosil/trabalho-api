@@ -68,4 +68,40 @@ export class PostController {
             res.status(statusCode).json(response);
         }
     }
+
+    public editarPost = (req: Request, res: Response) => {
+        console.log("Rota: PATCH /posts/:id - Editando post...");
+        console.log("ID recebido:", req.params.id);
+        console.log("Dados recebidos:", req.body);
+        
+        try {
+            const idAtualizado = Number(req.params.id);
+            const input = req.body;
+
+            const postAtualizado = this.postBusiness.editarPost(idAtualizado, input);
+            console.log("Post atualizado:", postAtualizado);
+
+            const response: ApiResponse<Post> = {
+                success: true,
+                message: "Post Atualizado com sucesso.",
+                data: postAtualizado
+            };
+            console.log("Resposta enviada:", response);
+            res.status(200).json(response);
+        } catch (error: any) {
+            let statusCode = 500;
+            if(error.message.includes("não encontrado")) {
+                statusCode = 404;
+            } else {
+                statusCode = 400;
+            }
+
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message,
+                data: null
+            };
+            res.status(statusCode).json(response);
+        }
+    }
 }

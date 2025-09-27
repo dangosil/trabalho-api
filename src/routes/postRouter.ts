@@ -7,3 +7,4 @@ const postController = new PostController();
 
 postRouter.post("/", postController.criarPost);
 postRouter.get("/", postController.getAllPosts);
+postRouter.patch("/:id", postController.editarPost);

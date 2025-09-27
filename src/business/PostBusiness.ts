@@ -54,4 +54,34 @@ export class PostBusiness {
         posts.push(novoPost);
         return novoPost;
     }
+
+    public editarPost = (id: number, input: any) => {
+        const { title, content, published } = input;
+
+        const postEditado = posts.find((p) => p.id);
+
+        if(!postEditado) {
+            throw new Error("Post não encontrado.");
+        }
+        if(title !== undefined) {
+            if(typeof title !== "string" || title.length < 3) {
+                throw new Error("O campo 'title' deve ser uma string com no mínimo 3 caracteres.");
+            }
+            postEditado.title = title;
+        }
+
+        if(content !== undefined) {
+            if(typeof content !== "string" || content.length <10) {
+                throw new Error("O campo 'content' deve ser uma string com no mínimo 10 caracteres.");
+            }
+            postEditado.content = content;
+        }
+        if(published !== undefined) {
+            if(typeof published !== "boolean") {
+                throw new Error("O campo 'published' deve ser um boolean.");
+            }
+            postEditado.published = published;
+        }
+        return postEditado;
+    }
 }
