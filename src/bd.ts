@@ -1,20 +1,5 @@
-
-export interface Post {
-    id: number;
-    title: string;
-    content: string;
-    authorId: number;
-    createdAt: Date;
-    published: boolean;
-}
-
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: "admin" | "user";
-    age: number;
-}
+import { Post } from "./types/Post";
+import { User } from "./types/User";
 
 export const users: User[] = [
     {
