@@ -104,4 +104,46 @@ export class PostController {
             res.status(statusCode).json(response);
         }
     }
+
+    public deletarPost = (req: Request, res: Response) => {
+        console.log("Rota: DELETE /posts/:id - Deletando post...");
+        console.log("ID recebido:", req.params.id);
+        // console.log("CABEÇALHOS RECEBIDOS:", req.headers); Para descobrir porque estava dando erro de userID
+
+        try {
+            const idDeletadoPost = Number(req.params.id);
+            const userId = Number(req.headers['user-id']);
+
+            if(isNaN(userId)) {
+                throw new Error("ID do usuário é obrigatório e deve ser um número.");
+            }
+
+            this.postBusiness.deletarPost(idDeletadoPost, userId);
+            console.log("Post deletado com sucesso."); 
+
+            const response: ApiResponse<null> = {
+                success: true,
+                message: "Post deletado com sucesso.",
+                data: null
+            };
+            console.log("Resposta enviada:", response);
+            res.status(200).json(response);
+        } catch (error: any) {
+            let statusCode = 500;
+            if(error.message.includes("não encontrado")) {
+                statusCode = 404;
+            } else if(error.message.includes("Apenas o autor") || error.message.includes("não autenticado")) {
+                statusCode = 403;
+            } else if(error.message.includes("obrigatório")) {
+                statusCode = 400;
+            }
+
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message,
+                data: null
+            };
+            res.status(statusCode).json(response);
+        }
+    }
 }

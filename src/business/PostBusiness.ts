@@ -84,4 +84,26 @@ export class PostBusiness {
         }
         return postEditado;
     }
+
+    public deletarPost = (postId: number, userId: number) => {
+        const postQueSeraDeletado = posts.find((p) => p.id === postId);
+
+        if(!postQueSeraDeletado) {
+            throw new Error("Post não encontrado.");
+        } 
+
+        const usuarioRequisitante = users.find((u) => u.id === userId);
+
+        if(!usuarioRequisitante) {
+            throw new Error("Usuário não autenticado.");
+        }
+
+        if(postQueSeraDeletado.authorId !== userId && usuarioRequisitante.role !== "admin") {
+            throw new Error("Apenas o autor do post ou um administrador podem deletar este post.");
+        }
+        const indiceDoPost = posts.findIndex((p) => p.id === postId);
+        if(indiceDoPost > -1) {
+            posts.splice(indiceDoPost, 1);  
+        }
+    }
 }
