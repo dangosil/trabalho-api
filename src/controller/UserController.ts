@@ -212,4 +212,35 @@ export class UserController {
             res.status(statusCode).json(response);
         }
     }
+    public deletarUsuariosInativos = (req: Request, res: Response) => {
+        console.log("Deletando usuários inativos...");
+        try {
+            const { confirm } = req.query;
+
+            if(confirm !== 'true') {
+                return res.status(400).json({
+                    success: false,
+                    message: "Confirmação necessária. Adicione '?confirm=true' à URL.",
+                    data: null
+                });
+            }
+
+            const usuariosInativosDeletados = this.userBusiness.deletarUsuariosInativos();
+            console.log("Usuários deletados:", usuariosInativosDeletados);
+
+            const response: ApiResponse<User[]> = {
+                success:true,
+                message: `${usuariosInativosDeletados.length} usuários inativos foram removidos.`,
+                data: usuariosInativosDeletados
+            };
+            console.log("Resposta enviada:", response);
+            res.status(200).json(response);
+        } catch (error: any) {
+            const response: ApiResponse<null> = {
+                success: false,
+                message: error.message,
+                data: null
+            };
+        }
+    }
 }

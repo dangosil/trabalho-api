@@ -1,5 +1,6 @@
 import { users} from "../bd";
 import { User } from "../data/types";
+import { posts } from "../bd";
 
 export class UserBusiness {
     public getAllUsers() {
@@ -74,5 +75,21 @@ export class UserBusiness {
         usuarioQueSeraAtualizado.age = age;
 
         return usuarioQueSeraAtualizado;
+    }
+    public deletarUsuariosInativos() {
+        const idsAutores = new Set(posts.map((p) => p.authorId));
+    
+        const usuarioInativo = users.filter((u) => !idsAutores.has(u.id) && u.role !== 'admin');
+
+        if(usuarioInativo.length === 0) {
+            return [];
+        }
+        
+        const usuariosParaManter = users.filter((u) => idsAutores.has(u.id) || u.role === 'admin');
+
+        users.length = 0;
+        users.push(...usuariosParaManter);
+
+        return usuarioInativo;
     }
 }
