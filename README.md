@@ -31,6 +31,7 @@ Este projeto é um material didático para aprender e consolidar os fundamentos 
 Para iniciar o servidor em modo de desenvolvimento (com reinicialização automática), use:
 ```bash
 npm run dev
+```
 
 O servidor estará rodando em http://localhost:3003.
 
