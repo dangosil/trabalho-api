@@ -34,8 +34,6 @@ export const users: User[] = [
     }
 ];
 
-
-
 export let posts: Post[] = [];
 
     // exemplo de post para copiar e colar

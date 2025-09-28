@@ -1,55 +1,74 @@
-import { users} from "../bd";
+import { UserData } from "../data/userData";
+import { PostData } from "../data/PostData";
 import { User } from "../data/types";
-import { posts } from "../bd";
 
 export class UserBusiness {
+    private userData = new UserData();
+    private postData = new PostData();
+    
+    public criarUsuario(input: any) {
+        const {id, name, email, role, age} = input;
+
+        if(!id || !name || !email || !role || !age) {
+            throw new Error('Dados incompletos. Por favor, forneça todos os campos necessários.');
+        }
+        if(this.userData.buscarUsuarioPorId(id)) {
+            throw new Error('ID já cadastrado. Insira um ID válido.');
+        }
+        if(this.userData.buscarUsuarioPorEmail(email)) {
+            throw new Error('Email já cadastrado. Insira um email válido.');
+        }
+        const novoUsuario: User = {id, name, email, role, age};
+        this.userData.criarUsuario(novoUsuario);
+        return novoUsuario;
+    }
+    
+    public verify = (email: string) => {
+        try {
+
+            if (!email) {
+                throw new Error("Campos faltantes")
+            }
+
+            const user = this.userData.buscarUsuarioPorEmail(email) as any;
+            if (!user) {
+                throw new Error("Usuario inexistente");
+            }
+
+            return user;
+
+        } catch (error: any) {
+            throw new Error(error)
+        }
+    }
+
     public getAllUsers() {
-        return users;
+        return this.userData.getAllUsers();
     }
     
     public buscarUsuarioPeloNome(name: string) {
-        let usuariosRetornados = users;
+        let usuariosRetornados = this.userData.getAllUsers();
         if(name) {
-            usuariosRetornados = users.filter((u) => u.name.toLowerCase().includes(name.toString().toLowerCase()));
+            return usuariosRetornados.filter((u) => u.name.toLowerCase().includes(name.toString().toLowerCase()));
         }
         return usuariosRetornados;
     }
 
     public buscarUsuarioPorIdade(min: Number, max: Number) {
+        const todosUsuarios = this.userData.getAllUsers();
         const minAge = Number(min);
         const maxAge = Number(max);
-        return users.filter((u) => u.age >= minAge && u.age <= maxAge);
+        return todosUsuarios.filter((u) => u.age >= minAge && u.age <= maxAge);
     }
 
     public buscarUsuarioPorId(id: number) {
-        const userId = Number(id);
-        const user = users.find(u => u.id === userId);
+        const user = this.userData.buscarUsuarioPorId(id);
         if(!user) {
             throw new Error('Usuário não encontrado.');
         }
         return user;   
     }
 
-    public criarUsuario(input: any) {
-        const {id, name, email, role, age} = input;
-        const idExiste = users.find((u) => u.id === id);
-        const emailExiste = users.find((u) => u.email === email);
-
-        if(idExiste) {
-            throw new Error('ID já cadastrado. Insira um ID válido.');
-        }
-
-        if(emailExiste) {
-            throw new Error('Email já cadastrado. Insira um email válido.');
-        }
-
-        if(!id || !name || !email || !role || !age) {
-            throw new Error('Dados incompletos. Por favor, forneça todos os campos necessários.');
-    }
-    const novoUsuario: User = {id, name, email, role, age};
-    users.push(novoUsuario);
-    return novoUsuario;
-    }
 
     public atualizarUsuario = (id: number, input: any) => {
         const { name, email, role, age } = input;
@@ -57,13 +76,13 @@ export class UserBusiness {
         if (name === undefined || email === undefined || role === undefined || age === undefined) {
             throw new Error("Dados incompletos. Por favor, forneça todos os campos necessários.");
         }
-        const usuarioQueSeraAtualizado = users.find((u) => u.id === id);
+        const usuarioQueSeraAtualizado = this.userData.buscarUsuarioPorId(id);
 
         if(!usuarioQueSeraAtualizado) {
             throw new Error("Usuário não encontrado.");
         }
 
-        const emailExiste = users.find((u) => u.email === email && u.id !== id);
+        const emailExiste = this.userData.buscarUsuarioPorEmail(email);
 
         if(emailExiste) {
             throw new Error("Email já cadastrado. Insira um email válido.");
@@ -74,21 +93,24 @@ export class UserBusiness {
         usuarioQueSeraAtualizado.role = role;
         usuarioQueSeraAtualizado.age = age;
 
+        this.userData.atualizarUsuario(id, usuarioQueSeraAtualizado);
+
         return usuarioQueSeraAtualizado;
     }
     public deletarUsuariosInativos() {
-        const idsAutores = new Set(posts.map((p) => p.authorId));
+        const todosPosts = this.postData.getAllPosts();
+        const todosUsuarios = this.userData.getAllUsers();
+        const idsAutores = new Set(todosPosts.map((p) => p.authorId));
     
-        const usuarioInativo = users.filter((u) => !idsAutores.has(u.id) && u.role !== 'admin');
+        const usuarioInativo = todosUsuarios.filter((u) => !idsAutores.has(u.id) && u.role !== 'admin');
 
         if(usuarioInativo.length === 0) {
             return [];
         }
         
-        const usuariosParaManter = users.filter((u) => idsAutores.has(u.id) || u.role === 'admin');
+        const usuariosParaManter = todosUsuarios.filter((u) => idsAutores.has(u.id) || u.role === 'admin');
 
-        users.length = 0;
-        users.push(...usuariosParaManter);
+        this.userData.substituirArrayDeUsuarios(usuariosParaManter);
 
         return usuarioInativo;
     }

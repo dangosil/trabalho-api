@@ -5,6 +5,23 @@ import { User } from '../data/types';
 export class UserController {
     private userBusiness = new UserBusiness();
 
+    public verify = (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            const user = this.userBusiness.verify(email);
+            
+            const response: ApiResponse<any> = {
+                success: true,
+                message: "Verificação realizada com sucesso.",
+                data: user
+            };
+            res.status(200).json(response);
+        } catch (error: any) {
+            const response: ApiResponse<null> = { success: false, message: error.message, data: null };
+            res.status(400).json(response);
+        }
+    }
+
     public getAllUsers = (req: Request, res: Response) => {
         console.log("Rota: GET /users - Buscando todos os usuários...");
 
@@ -44,7 +61,7 @@ export class UserController {
                 message: "Busca por nome realizada com sucesso.",
                 data: result
             };
-            res.status(200).json(result);
+            res.status(200).json(response);
         } catch (error: any) {
             const response: ApiResponse<null> = {
                 success: false,
@@ -84,7 +101,7 @@ export class UserController {
                 data: result
             };
             console.log("Resposta enviada:", response);
-            res.status(200).json(result);
+            res.status(200).json(response);
         } catch (error: any) {
             if (error.message.includes("inválidos")) {
                 const response: ApiResponse<null> = {
@@ -160,7 +177,7 @@ export class UserController {
 
             let statusCode = 500;
 
-            if(error.message.includes("cadastrado")) {
+            if(error.message.includes("Email")) {
                 statusCode = 409;
             } else if(error.message.includes("incompletos")) {
                 statusCode = 400;
@@ -241,6 +258,7 @@ export class UserController {
                 message: error.message,
                 data: null
             };
+            res.status(500).json(response);
         }
     }
 }

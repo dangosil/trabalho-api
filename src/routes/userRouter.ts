@@ -11,6 +11,6 @@ userRouter.get("/", userController.getAllUsers);
 userRouter.delete("/cleanup-inactive", userController.deletarUsuariosInativos);
 userRouter.get("/:id", userController.buscarUsuarioPorId);
 
-
+userRouter.post('/verify', userController.verify);
 userRouter.post("/", userController.criarUsuario);
 userRouter.put("/:id", userController.atualizarUsuario);

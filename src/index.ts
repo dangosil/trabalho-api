@@ -1,6 +1,7 @@
-import { app } from "./app";
-import { postRouter } from "./routes/postRouter";
-import { userRouter } from "./routes/userRouter";
+import { app } from './app';
 
-app.use("/users", userRouter);
-app.use("/posts", postRouter);
+const PORT = 3003;
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});

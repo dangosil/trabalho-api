@@ -1,10 +1,14 @@
+import { PostData } from '../data/PostData';
+import { UserData } from '../data/userData';
 import { posts } from "../bd";
 import { Post } from "../data/types";
-import { users } from "../bd";
 
 export class PostBusiness {
+    private postData = new PostData();
+    private userData = new UserData();
+
     public getAllPosts() {
-        return posts;
+        return this.postData.getAllPosts();
     }
 
     public criarPost(input: any) {
@@ -25,7 +29,7 @@ export class PostBusiness {
         
         const minimoCaracteresTitulo = 3;
         const minimoCaracteresContrudo = 10;
-        const autorExiste = users.find((u) => u.id === authorId);
+        const autorExiste = this.userData.buscarUsuarioPorId(authorId);
         
         if(title.length < minimoCaracteresTitulo) {
             errors.push('O título deve ter no mínimo 3 caracteres.');
@@ -35,7 +39,7 @@ export class PostBusiness {
             errors.push('O conteúdo deve ter no mínimo 10 caracteres.');
         } 
         
-        if(!autorExiste) {
+        if(authorId && !autorExiste) {
             errors.push('O ID do autor fornecido não existe.');
         }
 
@@ -43,22 +47,23 @@ export class PostBusiness {
             throw new Error(errors.join(", "));
         }
 
+        const allPosts = this.postData.getAllPosts();
         const novoPost: Post = {
-            id: posts.length > 0 && posts[posts.length - 1] ? posts[posts.length - 1]!.id + 1 : 1, 
+            id: allPosts.length > 0 && allPosts[posts.length - 1] ? allPosts[allPosts.length - 1]!.id + 1 : 1, 
             title, 
             content, 
             authorId, 
             createdAt: new Date(), 
             published: false
         };
-        posts.push(novoPost);
+        this.postData.criarPost(novoPost);
         return novoPost;
     }
 
     public editarPost = (id: number, input: any) => {
         const { title, content, published } = input;
 
-        const postEditado = posts.find((p) => p.id);
+        const postEditado = this.postData.buscarPostPorId(id);
 
         if(!postEditado) {
             throw new Error("Post não encontrado.");
@@ -82,17 +87,18 @@ export class PostBusiness {
             }
             postEditado.published = published;
         }
+        this.postData.editarPost(id, postEditado);
         return postEditado;
     }
 
     public deletarPost = (postId: number, userId: number) => {
-        const postQueSeraDeletado = posts.find((p) => p.id === postId);
+        const postQueSeraDeletado = this.postData.buscarPostPorId(postId);
 
         if(!postQueSeraDeletado) {
             throw new Error("Post não encontrado.");
         } 
 
-        const usuarioRequisitante = users.find((u) => u.id === userId);
+        const usuarioRequisitante = this.userData.buscarUsuarioPorId(userId);
 
         if(!usuarioRequisitante) {
             throw new Error("Usuário não autenticado.");
@@ -101,9 +107,6 @@ export class PostBusiness {
         if(postQueSeraDeletado.authorId !== userId && usuarioRequisitante.role !== "admin") {
             throw new Error("Apenas o autor do post ou um administrador podem deletar este post.");
         }
-        const indiceDoPost = posts.findIndex((p) => p.id === postId);
-        if(indiceDoPost > -1) {
-            posts.splice(indiceDoPost, 1);  
-        }
+        this.postData.deletarPost(postId);
     }
 }
