@@ -1,5 +1,5 @@
 import { PostData } from '../data/PostData';
-import { UserData } from '../data/userData';
+import { UserData } from '../data/UserData';
 import { posts } from "../bd";
 import { Post } from "../data/types";
 

@@ -1,4 +1,4 @@
-import { UserData } from "../data/userData";
+import { UserData } from "../data/UserData";
 import { PostData } from "../data/PostData";
 import { User } from "../data/types";
 
